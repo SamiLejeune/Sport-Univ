@@ -1,15 +1,22 @@
 const Discord = require('discord.js')
 const bot = new Discord.Client()
+const {TOKEN} = require('./config')
+const command = require('./command')
+
+bot.login(TOKEN)
 
 bot.on('ready', function () {
-    console.log("Le bot est connecté!")
+    console.log("Starting bot")
+    command(bot,'ping',(message) => {
+        message.channel.send("Pong !")
+    })
+    command(bot,'reload', () => {
+        process.exit(1)
+    })
+    command(bot,'status', (message) => {
+      message.channel.send("Je suis actif !")
+    })
 })
 
-bot.on('message', message => {
-    if (message.content === '!event') {
-        message.guild.channels.create("Mazette")
-        
-    }
-})
 
-bot.login('ODI2OTQ4NTk2NDYwODE0MzY2.YGT55Q.niLqiMqhIWKpkrd9DBvq0IAT3wc')
+
