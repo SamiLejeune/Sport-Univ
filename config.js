@@ -1,2 +1,7 @@
-exports.TOKEN="ODI2OTQ4NTk2NDYwODE0MzY2.YGT55Q.7vGOi_pPfS-s4HO2G7FQRozn8IQ";
+const EventManager = require("./event-manager");
+
+exports.TOKEN="";
 exports.PREFIX="!";
+exports.SPORTS= ['Football','Basketball','Running','Tennis','Skatepark']
+exports.CREATING= new Map()
+exports.EVENT_MANAGER = new EventManager()
