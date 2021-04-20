@@ -37,11 +37,13 @@ bot.on('ready', function () {
             message.author.send(embed)
             //Permet de stocker le fait qu'une personne a commencé à créer un évenement
             let event = new Event()
-            event.createur = message.member.nickname
-            CREATING.set(message.author,event)
+            event.createur = message.author.username
+            CREATING.set(message.author.username,event)
         }
-    }
-    )
+    })
+    command(bot,'id',(message) => {
+        console.log(message.channel.id)
+    })
 })
 
 

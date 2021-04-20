@@ -25,6 +25,14 @@ class EventManager {
         }
         return rtn;
     }
+
+    getById(id) {
+        for (var i = 0 ; i < this.events.length ; i++) {
+            if (this.events[i].id === id) {
+                return this.events[i]
+            }
+        }
+    }
 }
 
 module.exports = EventManager
