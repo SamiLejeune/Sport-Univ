@@ -75,9 +75,11 @@ module.exports = async (client) => {
                 if (emoji === '✅') {
                     event.addAccepted(user.username)
                     msg.edit(eventEmbed(event))
+                    msg.reactions.resolve('❌').users.remove(user)
                 } else if (emoji === '❌') {
                     event.addDeclined(user.username)
                     msg.edit(eventEmbed(event))
+                    msg.reactions.resolve('✅').users.remove(user)
                 }
             } else {
     
