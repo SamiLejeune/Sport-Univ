@@ -3,6 +3,7 @@ const Event = require('./event')
 const botMessage = require('./bot-message')
 const Discord = require('discord.js')
 const eventEmbed = require('./custom-embed-event')
+
 module.exports = async (client) => {
     client.on('message',(message) => {
         if(message.channel.type === 'dm' && !message.author.bot) {
@@ -64,7 +65,8 @@ module.exports = async (client) => {
                     event.id = ""+ Math.floor(Math.random() * 1000000)
                     const channel = client.channels.cache.find(channel => channel.id === MAP_CHANNEL_TYPE_EVENt.get(event.type))
                     channel.send(botMessage(client,channel.id,eventEmbed(event),['✅','❌']))
-                    EVENT_MANAGER.addEvent(event)
+                    CREATING.delete(user.username)
+                    event.createSpecificChannel(client)
                 } else if (emoji === '❌') {
                     msg.delete()
                     user.send("Vous avez supprimé l'évenement ✅")
@@ -73,17 +75,27 @@ module.exports = async (client) => {
                 const embed = msg.embeds[0]
                 const event = EVENT_MANAGER.getById(embed.author.name)
                 if (emoji === '✅') {
+                    //LA PERSONNE PARTICiPE A LEVENT
+                    const channel = client.channels.cache.find(channel => channel.id === event.channelId)
+                    channel.updateOverwrite(user, {
+                        SEND_MESSAGES: true,
+                        VIEW_CHANNEL: true
+                    });
                     event.addAccepted(user.username)
                     msg.edit(eventEmbed(event))
                     msg.reactions.resolve('❌').users.remove(user)
                 } else if (emoji === '❌') {
+                    //LA PERSONNE NE PARTICIPE PAS A LEVENT
+                    const channel = client.channels.cache.find(channel => channel.id === event.channelId)
+                    channel.updateOverwrite(user, {
+                        SEND_MESSAGES: false,
+                        VIEW_CHANNEL: false
+                    });
                     event.addDeclined(user.username)
                     msg.edit(eventEmbed(event))
                     msg.reactions.resolve('✅').users.remove(user)
                 }
-            } else {
-    
-            }
+            } else {}
         }
     })
 
@@ -91,12 +103,19 @@ module.exports = async (client) => {
         const emoji = reaction._emoji.name
         const msg = reaction.message
         if (msg.embeds.length != 0) {
-            if (!user.bot) {
+            if (!user.bot && !channelReaction(msg.channel.id)) {
+                // DO NOTHING
+            } else if (!user.bot) {
                 const embed = msg.embeds[0]
                 const event = EVENT_MANAGER.getById(embed.author.name)
                 if (emoji === '✅') {
                     event.removeAccepted(user.username)
                     msg.edit(eventEmbed(event))
+                    const channel = client.channels.cache.find(channel => channel.id === event.channelId)
+                    channel.updateOverwrite(user, {
+                        SEND_MESSAGES: false,
+                        VIEW_CHANNEL: false
+                    });
                 } else if (emoji === '❌') {
                     event.removeDeclined(user.username)
                     msg.edit(eventEmbed(event))

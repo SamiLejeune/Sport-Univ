@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const bot = new Discord.Client()
-const {TOKEN,SPORTS,CREATING} = require('./config')
+const {TOKEN,SPORTS,CREATING,MODIFY_OBJECT} = require('./config')
 const command = require('./command')
 const botMessage = require('./bot-message')
 const Event = require('./event')
@@ -25,9 +25,16 @@ bot.on('ready', function () {
       message.channel.send("Je suis actif !")
     })
     command(bot,'test', (message) => {
-        botMessage(bot, '826957028597301268','Let\'s go',['✅','❌'])
+        ///botMessage(bot, '826957028597301268','Let\'s go',['✅','❌'])
+        const guild = message.guild;
+        console.log(guild.channels)
+        const categoryChannels = guild.channels.filter(channel => channel.type === "category");
+        categoryChannels.forEach(channel => {
+            console.log(`Category ${channel.name} has ${channel.children.size} channels`);
+        });
     })
     command(bot,'event',(message) => {
+        MODIFY_OBJECT.MESSAGE = message
         if (message.channel.type === 'dm') {
         } else {
             let i = 1
